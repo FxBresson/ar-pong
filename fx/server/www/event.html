@@ -1,0 +1,62 @@
+<!doctype HTML>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    </head>
+    <script src="https://aframe.io/releases/0.8.0/aframe.min.js"></script>
+    <script src="https://rawgit.com/jeromeetienne/AR.js/master/aframe/build/aframe-ar.min.js"></script>
+    <script src="https://rawgit.com/donmccurdy/aframe-extras/master/dist/aframe-extras.loaders.min.js"></script>
+    
+    <!-- import events.js script -->
+    <script src="https://rawgit.com/nicolocarpignoli/nicolocarpignoli.github.io/master/ar-playground/events.js"></script>
+    
+    <body style='margin : 0px; overflow: hidden;'>
+        <!-- we add detectionMode and matrixCodeType to tell AR.js to recognize barcode markers -->
+        <a-scene embedded arjs='sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3;'>
+
+            <a-marker markerhandler emitevents="true" cursor="rayOrigin: mouse" id="animated-marker" preset='hiro'>
+                    <a-box id="animated-model" position='0 0.5 0' scale="1" material='color: green;'></a-box>
+                </a-entity>
+            </a-marker>
+
+            <!-- use this <a-entity camera> to support multiple-markers, otherwise use <a-marker-camera> instead of </a-marker> -->
+            <a-entity camera></a-entity>
+        </a-scene>
+
+        <script src="/socket.io/socket.io.js"></script>
+        <script>
+            //Imports
+            var socket = io();
+
+            // List of AR entities
+            const entities = {
+                animated: {
+                    marker: document.querySelector("#animated-marker"),
+                    model: document.querySelector('#animated-model')
+                }
+            }
+
+            // Scale up function
+            function scaleUp(entityName) {
+                //alert(entityName)
+                const scale = entities[entityName].model.getAttribute('scale');
+                // Scale x, y and z properties
+                Object.keys(scale).forEach((key) => scale[key] = scale[key] + 0.5);
+                entities[entityName].model.setAttribute('scale', scale);
+            }
+            
+            // Listen for scale up event emited by the server
+            socket.on('scale-up-server', function(entityName) {
+                scaleUp(entityName)
+            })
+
+            // On click on the entity
+            entities.animated.marker.addEventListener('click', function(ev){
+                if (entities.animated.marker.object3D.visible == true && ev.detail.cursorEl) {
+                    // Emit a scaling up event of the 'animated' entity to the server
+                    socket.emit('scale-up-local', 'animated');
+                }
+            });
+        </script>
+    </body>
+</html>
