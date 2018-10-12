@@ -1,0 +1,58 @@
+<!doctype html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <!--LIB THREE-->
+    <script src='assets/vendors/three.js'></script>
+
+
+    <!--LIB ARTOOLKIT-->
+    <script src="assets/vendors/artoolkit.min.js"></script>
+    <script src="assets/vendors/artoolkit.api.js"></script>
+
+    <!--LIB THREEX-->
+    <script src="assets/vendors/threex-artoolkitsource.js"></script>
+    <script src="assets/vendors/threex-artoolkitcontext.js"></script>
+    <script src="assets/vendors/threex-arbasecontrols.js"></script>
+    <script src="assets/vendors/threex-armarkercontrols.js"></script>
+    <script src="assets/vendors/threex-domEvents-c.js"></script>
+
+
+    <!--STYLE-->
+    <link rel="stylesheet" href="assets/css/main.css">
+</head>
+
+<body class="sandboxe-game"></body>
+
+    <h1 class="sandboxe-game__header">Sanboxe</h1>
+
+    <div class="sandboxe-game__interface">
+
+        <!-- TODO : colorpicker -->
+        <ul class="sandboxe-game__colors">
+            <li>
+                <input class="sandboxe-game__slideRed" type="range" id="slideRed" name="slideRed" min="0" max="255" value="0">
+            </li>
+            <li>
+                <input class="sandboxe-game__slideGreen" type="range" id="slideGreen" name="slideGreen" min="0" max="255" value="255">
+            </li>
+            <li>
+                <input class="sandboxe-game__slideBlue" type="range" id="slideBlue" name="slideBlue" min="0" max="255" value="255">
+            </li>
+            <li class="sandboxe-game__result">
+
+            </li>
+        </ul>
+
+
+        <p class="sandboxe-game__footer">Cours AR - ECV Digital 2018</p>
+    </div>
+
+    <!--SCRIPT JEU-->
+    <script type="text/javascript" src="assets/js/Sandbox.js"></script>
+
+    <script>
+        
+    </script>
+
+</body>
