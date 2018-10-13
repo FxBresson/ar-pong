@@ -326,6 +326,19 @@ class Sandboxe {
         
         t.cubeColor = t.hslToHex(t.$colorSlideChroma.value,100,50);
         t.$colorResult.style.backgroundColor = 'hsl(' + t.$colorSlideChroma.value + ', 100%, 50%)'
+
+        // Loop sur les éléments Mesh
+        t.scene.traverse( function( node ) {
+            if ( node instanceof THREE.Mesh ) {
+                // Si le cube est sélectionné
+                if (node.active) {
+                    // Changement de couleur
+                    let material = new THREE.MeshBasicMaterial({color: t.cubeColor})
+                    node.material = material
+                    t.cubeInactive(node.name)
+                } 
+            }
+        } );
     }
 
     editMode() {
@@ -400,6 +413,7 @@ class Sandboxe {
                     // Couleur transparentes sur le cube
                     let material = new THREE.MeshBasicMaterial({color: "#000000", wireframe: true })
                     node.material = material
+                    t.cubeInactive(node.name)
                 } 
             }
         } );
