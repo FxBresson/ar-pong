@@ -26,33 +26,26 @@
 
     <h1 class="sandboxe-game__header">Sanboxe</h1>
 
-    <div class="sandboxe-game__interface">
+    <div class="sandboxe-game__interface vue">
 
-        <!-- TODO : colorpicker -->
-        <ul class="sandboxe-game__colors">
-            <li>
-                <input class="sandboxe-game__slideRed" type="range" id="slideRed" name="slideRed" min="0" max="255" value="0">
-            </li>
-            <li>
-                <input class="sandboxe-game__slideGreen" type="range" id="slideGreen" name="slideGreen" min="0" max="255" value="255">
-            </li>
-            <li>
-                <input class="sandboxe-game__slideBlue" type="range" id="slideBlue" name="slideBlue" min="0" max="255" value="255">
-            </li>
-            <li class="sandboxe-game__result">
+        <!-- Mode -->
+        <div class="sandboxe-game__mode"><p>Mode <span>Vue</span></p></div>
 
-            </li>
-        </ul>
+        <!-- Buttons -->
+        <div class="sandboxe-game__editButton"> <p>Edit</p></div>
+        <div class="sandboxe-game__removeButton hidden"> <p>Remove</p></div>
 
-
-        <p class="sandboxe-game__footer">Cours AR - ECV Digital 2018</p>
+        <!-- colorpicker -->
+        <div class="sandboxe-game__colors hidden">
+            <input class="sandboxe-game__slideChroma" type="range" id="slideChroma" name="slideChroma" min="0" max="360" value="178">
+            <p class="sandboxe-game__result"></p>
+        </div>
+        
     </div>
+
+    <p class="sandboxe-game__footer">Cours AR - ECV Digital 2018</p>
 
     <!--SCRIPT JEU-->
     <script type="text/javascript" src="assets/js/Sandbox.js"></script>
-
-    <script>
-        
-    </script>
 
 </body>

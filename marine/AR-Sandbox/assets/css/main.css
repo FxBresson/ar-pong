@@ -28,13 +28,6 @@ html {
     left: 0;
 }
 
-.sandboxe-game__interface {
-    position: absolute;
-    width: 100vw;
-    bottom: 7rem;
-    z-index: 1;
-}
-
 .sandboxe-game__header {
     position: absolute;
     top: 0;
@@ -45,61 +38,68 @@ html {
     height: 50px;
 }
 
-.sandboxe-game__shapes {
-    height: 50px;
-    width: 100vw;
-    position: absolute;
-    bottom: 70px;
-    font-size: 0;
-    line-height: 50px;
-    text-align: center;
-}
-
-.sandboxe-game__shapes li {
-    display: inline-block;
-    vertical-align: middle;
-    font-size: 12px;
-    line-height: 12px;
-    color: white;
-    background-color: black;
-    padding: 10px 20px;
-    margin: 0 10px;
-}
-
-.sandboxe-game__colors  {
-    height: 50px;
+.sandboxe-game__interface {
+    height: 5rem;
     width: 100vw;
     position: absolute;
     bottom: 20px;
-    font-size: 0;
     line-height: 50px;
+    color: white;
+    padding-top: 1rem;
+}
+
+.sandboxe-game__interface.vue { background-color: blue; }
+.sandboxe-game__interface.edition { background-color: red; }
+
+.sandboxe-game__mode {
+    width: 15vw;
+    display: inline-block;
+    left: 1rem;
+    position: relative;
+}
+.sandboxe-game__mode span {
+    font-weight: bold;
+}
+
+.sandboxe-game__editButton  {
+    width: 15vw;
+    display: inline-block;
+    left: 1rem;
+    position: relative;
+}
+
+.sandboxe-game__editButton p {
+    border: 1px solid white;
+    height: 3rem;
     text-align: center;
 }
 
-.sandboxe-game__colors li {
+.sandboxe-game__removeButton  {
+    width: 15vw;
     display: inline-block;
-    vertical-align: middle;
-    margin: 0 10px;
-    /* width: 20px; */
-    height: 20px;
-    /* border-radius: 100%; */
+    left: 1rem;
+    position: relative;
 }
 
-.sandboxe-game__colors li.sandboxe-game__result {
+.sandboxe-game__removeButton p {
+    border: 1px solid white;
+    height: 3rem;
+    text-align: center;
+}
+
+.sandboxe-game__colors  {
+    width: 30vw;
+    display: inline-block;
+    left: 1rem;
+    position: relative;
+}
+
+.sandboxe-game__colors .sandboxe-game__result {
     border-radius: 100%;
     width: 20px;
-}
-
-.sandboxe-game__colors li:nth-child(1) {
-    background-color: red;
-}
-
-.sandboxe-game__colors li:nth-child(2) {
-    background-color: green;
-}
-
-.sandboxe-game__colors li:nth-child(3) {
-    background-color: blue;
+    height: 20px;
+    border: 1.5px solid black;
+    display: inline-block;
 }
 
 .sandboxe-game__footer {
@@ -114,6 +114,10 @@ html {
 
 /* GENERAL */
 .hidden {
-    /* display: none !important; */
+    visibility: hidden;
+}
+
+.active {
+    visibility: visible;
 }
 

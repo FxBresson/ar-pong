@@ -2,14 +2,25 @@ class Sandboxe {
     constructor() {
         const t = this
 
-        // DOM
-        t.$container = document.querySelector(".sandboxe-game__canvas")
-        t.$colors = document.querySelector(".sandboxe-game__colors")
-        t.$colorSlideRed = document.querySelector(".sandboxe-game__slideRed")        
-        t.$colorSlideGreen = document.querySelector(".sandboxe-game__slideGreen")
-        t.$colorSlideBlue = document.querySelector(".sandboxe-game__slideBlue")
-        t.$colorResult = document.querySelector(".sandboxe-game__result")
+        /**
+         *  DOM
+         */
+        // Header
         t.$header = document.querySelector(".sandboxe-game__header")
+        // Canvas container
+        t.$container = document.querySelector(".sandboxe-game__canvas")
+        // Interface
+        t.$interface = document.querySelector(".sandboxe-game__interface")
+        // Mode
+        t.$modeDiv = document.querySelector(".sandboxe-game__mode span")
+        // Colors
+        t.$colors = document.querySelector(".sandboxe-game__colors")
+        t.$colorSlideChroma = document.querySelector(".sandboxe-game__slideChroma")
+        t.$colorResult = document.querySelector(".sandboxe-game__result")
+        // Buttons
+        t.$buttonEdit = document.querySelector(".sandboxe-game__editButton")
+        t.$buttonRemove = document.querySelector(".sandboxe-game__removeButton")
+        
 
         // variable urls
         THREEx.ArToolkitContext.baseURL = './assets/markers/'
@@ -17,12 +28,6 @@ class Sandboxe {
         // taille de l'écran
         t.ww = window.innerWidth
         t.wh = window.innerWidth
-
-        // toutes les couleurs
-        t.colors = {
-            white: 0xffffff,
-            red: 0x00ffff
-        }
 
         // loop des functions
         t.onRenderFcts = []
@@ -38,9 +43,11 @@ class Sandboxe {
         t.sizeCube = 1
 
         // Default color
-        t.cubeColor = "#00FFFF";
+        t.cubeColor = "#00FFF7";
         t.$colorResult.style.backgroundColor = t.cubeColor
 
+        // Default mode
+        t.$modeEdition = false;
 
         t.init()
     }
@@ -111,9 +118,11 @@ class Sandboxe {
         t.domEvents	= new THREEx.DomEvents(t.camera, t.renderer.domElement)
 
         // Change color
-        t.$colorSlideRed.addEventListener("change", t.updateCubeColor.bind(t))
-        t.$colorSlideGreen.addEventListener("change", t.updateCubeColor.bind(t))
-        t.$colorSlideBlue.addEventListener("change", t.updateCubeColor.bind(t))
+        t.$colorSlideChroma.addEventListener("change", t.updateCubeColor.bind(t))
+
+        // Edit button
+        t.$buttonEdit.addEventListener("click", t.editMode.bind(t))
+        t.$buttonRemove.addEventListener("click", t.removeCube.bind(t))
     }
 
     resize() {
@@ -181,22 +190,45 @@ class Sandboxe {
             for (let j = 0; j < t.gridSize ; j++) {
 
                 let geometry = new THREE.BoxGeometry(t.sizeCube, t.sizeCube, t.sizeCube)
-                // let material = new THREE.MeshBasicMaterial({color: t.colors.white, wireframe: true})
-                let material = new THREE.MeshBasicMaterial({color: t.cubeColor, wireframe: true})
+                let material = new THREE.MeshBasicMaterial({color: "#000000", wireframe: true})
                 let mesh = new THREE.Mesh(geometry, material)
 
                 mesh.position.x = ( i * t.sizeCube ) - ( ( t.gridSize - 1 ) / 2 * t.sizeCube )
                 mesh.position.z = ( j * t.sizeCube ) - ( ( t.gridSize - 1 ) / 2 * t.sizeCube )
 
                 mesh.name = 'mesh-' + count++
+                mesh.new = true;
+                mesh.active = false;
 
                 // ajoute à notre groupe
                 grid.add(mesh)
 
-                // chacun des block on ajoute un écouteur d'évènements
+                // chacun des block on ajoute un écouteur d'événements
                 t.domEvents.addEventListener( mesh, 'click', function() {
-                    t.updateMesh(mesh.name)
-                    // alert("click "+ mesh.name)
+
+                    // Si on est en mode edition
+                    if (t.$modeEdition) {
+                        // Si le cube existe déjà
+                        if (!mesh.new) {
+                            // Si le cube est déjà actif
+                            if (mesh.active) {
+                                // Désactivation du cube
+                                t.cubeInactive(mesh.name)
+                            } else {
+                                // Activation du cube
+                                t.cubeActive(mesh.name)
+                            }
+                        } else {
+                            // Ajout du cube
+                            t.updateMesh(mesh.name)
+                        }
+
+                        // Cube ajouté
+                        mesh.new = false;
+
+                        // alert("click "+ mesh.name)
+                    }
+                    
                 })
             }
         }
@@ -209,12 +241,12 @@ class Sandboxe {
 
         t.onRenderFcts.push(function () {
 
-            if ( t.elementSelected && grid.visible ) {
-                t.$colors.classList.remove("hidden")
-            }
-            else {
-                t.$colors.classList.add("hidden")
-            }
+            // if ( t.elementSelected && grid.visible ) {
+            //     t.$colors.classList.remove("hidden")
+            // }
+            // else {
+            //     t.$colors.classList.add("hidden")
+            // }
         })
     }
 
@@ -252,44 +284,128 @@ class Sandboxe {
         console.log("updateMesh", name)
 
         let mesh = t.scene.getObjectByName(name)
-        // let material = new THREE.MeshBasicMaterial({color: t.colors.red})
         let material = new THREE.MeshBasicMaterial({color: t.cubeColor})
 
         mesh.material = material
+
+        console.log("updateMesh", mesh.active)
     }
 
-    rgbToHex(rgb) { 
-        const t = this
-
-        let hex = Number(rgb).toString(16);
-        if (hex.length < 2) {
-             hex = "0" + hex;
+    hslToHex(h, s, l) {
+        h /= 360;
+        s /= 100;
+        l /= 100;
+        let r, g, b;
+        if (s === 0) {
+            r = g = b = l; // achromatic
+        } else {
+            const hue2rgb = (p, q, t) => {
+                if (t < 0) t += 1;
+                if (t > 1) t -= 1;
+                if (t < 1 / 6) return p + (q - p) * 6 * t;
+                if (t < 1 / 2) return q;
+                if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+                return p;
+            };
+            const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+            const p = 2 * l - q;
+            r = hue2rgb(p, q, h + 1 / 3);
+            g = hue2rgb(p, q, h);
+            b = hue2rgb(p, q, h - 1 / 3);
         }
-        return hex;
-    }
+        const toHex = x => {
+            const hex = Math.round(x * 255).toString(16);
+            return hex.length === 1 ? '0' + hex : hex;
+        };
 
-    fullColorHex(r,g,b) {   
-        const t = this
-
-        let red = t.rgbToHex(r);
-        let green = t.rgbToHex(g);
-        let blue = t.rgbToHex(b);
-        return "#"+red+green+blue;
+        return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
     }
 
     updateCubeColor() {
         const t = this
-
-        console.log(t.$colorSlideRed.value);
-        console.log(t.$colorSlideGreen.value);
-        console.log(t.$colorSlideBlue.value);
         
+        t.cubeColor = t.hslToHex(t.$colorSlideChroma.value,100,50);
+        t.$colorResult.style.backgroundColor = 'hsl(' + t.$colorSlideChroma.value + ', 100%, 50%)'
+    }
 
-        t.cubeColor = t.fullColorHex(t.$colorSlideRed.value,t.$colorSlideGreen.value,t.$colorSlideBlue.value);
-        t.$colorResult.style.backgroundColor = t.cubeColor
+    editMode() {
+        const t = this                
 
-        console.log(t.cubeColor);
+        // Si on est en mode vue, on passe en mode edition
+        if (t.$interface.classList.contains('vue')) {
+            // Interface en mode edition
+            t.$interface.classList.remove('vue'); 
+            t.$interface.classList.add('edition'); 
+            t.$modeDiv.innerHTML = "Edition"; 
+            // Button edit
+            t.$buttonEdit.querySelector('p').innerHTML = "Retour Vue";  
+            // Affichage des couleurs
+            t.$colors.classList.remove('hidden');  
+            // Mode edition à true -> autoriser le click sur la grille 
+            t.$modeEdition = true;
         
+        // Si on est en mode édition, on passe en mode vue
+        } else {
+            // Interface en mode vue
+            t.$interface.classList.remove('edition');
+            t.$interface.classList.add('vue');
+            t.$modeDiv.innerHTML = "Vue";
+            // Button edit
+            t.$buttonEdit.querySelector('p').innerHTML = "Editer";  
+            // Button remove
+            t.$buttonRemove.classList.add('hidden');
+            // Ne pas afficher les couleurs   
+            t.$colors.classList.add('hidden'); 
+            // Mode edition à false -> ne pas autoriser le click sur la grille  
+            t.$modeEdition = false;
+        }
+    }
+
+    cubeActive(name) {
+        const t = this
+
+        let mesh = t.scene.getObjectByName(name)
+
+        // Cube actif
+        mesh.active = true;
+
+        // Afficher le button remove
+        t.$buttonRemove.classList.remove('hidden');
+
+        console.log("cubeActive", mesh.active)
+    }
+
+    cubeInactive(name) {
+        const t = this
+
+        let mesh = t.scene.getObjectByName(name)
+
+        // Cube inactif
+        mesh.active = false;
+
+        // Ne pas afficher le button remove
+        t.$buttonRemove.classList.add('hidden');
+
+        console.log("cubeInactive", mesh.active)
+    }
+
+    removeCube() {
+        const t = this
+
+        // Loop sur les éléments Mesh
+        t.scene.traverse( function( node ) {
+            if ( node instanceof THREE.Mesh ) {
+                // Si le cube est sélectionné
+                if (node.active) {
+                    // Couleur transparentes sur le cube
+                    let material = new THREE.MeshBasicMaterial({color: "#000000", wireframe: true })
+                    node.material = material
+                } 
+            }
+        } );
+
+        // Ne pas afficher le button remove
+        t.$buttonRemove.classList.add('hidden');
     }
 
 }
