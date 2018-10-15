@@ -1,0 +1,119 @@
+/* RESET */
+* {
+    margin: 0;
+    padding: 0;
+}
+
+*, *:before, *:after {
+    box-sizing: inherit;
+}
+
+html {
+    box-sizing: content-box;
+}
+
+
+/* SANDBOXE */
+.sandboxe-game {
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+    font-family: Helvetica, sans-serif;
+    position: relative;
+}
+
+.sandboxe-game__canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    overflow: hidden;
+}
+
+.sandboxe-game__header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 50vw;
+    z-index: 1;
+    padding: 25px;
+}
+
+.sandboxe-game__header img {
+    display: block;
+    vertical-align: middle;
+    width: 35px;
+    height: 35px;
+}
+
+.sandboxe-game__interface {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 50px;
+    line-height: 50px;
+    padding: 25px;
+}
+
+.sandboxe-game__button {
+    width: 35px;
+    height: 35px;
+    border-radius: 100%;
+    border: solid 1px black;
+    position: relative;
+    margin-bottom: 20px;
+    transition: all 0.5s ease-out;
+}
+
+.sandboxe-game__button img {
+    width: 60%;
+    height: 60%;
+    position: absolute;
+    top: 45%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.sandboxe-game__colors  {
+    position: relative;
+}
+
+.sandboxe-game__colors input {
+    transform: rotate(-90deg) translateY(-100%);
+    position: absolute;
+    top: calc(100% + 25px + 50px);
+    left: -50%
+}
+
+.sandboxe-game__result {
+    border-radius: 100%;
+    width: 35px;
+    height: 35px;
+    border: 1px solid black;
+}
+
+.sandboxe-game__footer {
+    position: absolute;
+    bottom: 0;
+    width: 100vw;
+    text-align: center;
+    font-size: 10px;
+    padding: 5px 0;
+    z-index: 1;
+    background-color: black;
+    color: white;
+}
+
+
+/* GENERAL */
+.hidden {
+    display: none;
+}
+
+.active {
+    background-color: white;
+    border-color: white;
+}
+
+/*.active {*/
+    /*visibility: visible;*/
+/*}*/

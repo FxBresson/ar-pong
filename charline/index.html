@@ -1,0 +1,61 @@
+<!doctype html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <!--LIB THREE-->
+    <script src='assets/vendors/three.js'></script>
+
+
+    <!--LIB ARTOOLKIT-->
+    <script src="assets/vendors/artoolkit.min.js"></script>
+    <script src="assets/vendors/artoolkit.api.js"></script>
+
+    <!--LIB THREEX-->
+    <script src="assets/vendors/threex-artoolkitsource.js"></script>
+    <script src="assets/vendors/threex-artoolkitcontext.js"></script>
+    <script src="assets/vendors/threex-arbasecontrols.js"></script>
+    <script src="assets/vendors/threex-armarkercontrols.js"></script>
+    <script src="assets/vendors/threex-domEvents-c.js"></script>
+
+    <!--STYLE-->
+    <link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body class="sandboxe-game">
+
+<header class="sandboxe-game__header">
+    <img class="sandboxe-game__logo" src="assets/img/logo.png"/>
+</header>
+
+<main class="sandboxe-game__interface">
+
+    <!-- Buttons -->
+    <div class="sandboxe-game__button sandboxe-game__button--edit">
+        <img src="assets/img/icons/edit.svg" alt="Icone édition">
+    </div>
+
+    <div class="sandboxe-game__button sandboxe-game__button--add">
+        <img src="assets/img/icons/add.svg" alt="Icone ajouter">
+    </div>
+
+    <div class="sandboxe-game__button sandboxe-game__button--delete hidden">
+        <img src="assets/img/icons/delete.svg" alt="Icone effacer">
+    </div>
+
+    <!-- colorpicker -->
+    <div class="sandboxe-game__colors hidden">
+        <input class="sandboxe-game__slide-chroma" type="range" id="slideChroma" name="slideChroma" min="0" max="360" value="178">
+        <p class="sandboxe-game__result"></p>
+    </div>
+
+</main>
+
+<footer class="sandboxe-game__footer">
+    <p>© FX Bresson - Marine Lancelin - Charline Laporte </p>
+</footer>
+
+<!--SCRIPT JEU-->
+<script type="text/javascript" src="assets/js/Sandbox.js"></script>
+<script type="text/javascript" src="assets/js/Cube.js"></script>
+<script type="text/javascript" src="assets/js/Website.js"></script>
+
+</body>
