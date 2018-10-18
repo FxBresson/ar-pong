@@ -15,6 +15,7 @@ class Sandboxe {
         t.$colors = document.querySelector(".sandboxe-game__colors")
         t.$colorSlideChroma = document.querySelector(".sandboxe-game__slide-chroma")
         t.$colorResult = document.querySelector(".sandboxe-game__result")
+        t.$colorResult.style.opacity = 1
 
         // variable urls
         THREEx.ArToolkitContext.baseURL = './assets/markers/'
@@ -32,10 +33,10 @@ class Sandboxe {
         // flag
         t.isSeen = false
         window.isEdition = false
+        window.isAdding = false
 
-        // pour représentation sous la forme d'un tableau du plateau de jeu
+        // valeur du jeu
         t.gridSize = 3
-        t.boardGame = []
 
         t.init()
     }
@@ -47,8 +48,8 @@ class Sandboxe {
         t.createCamera()
         t.createLight()
         t.createArToolKitSource()
-        t.createGamePlay()
 
+        t.createVariables()
         t.bindEvents()
 
         t.initArToolKitSource()
@@ -103,35 +104,41 @@ class Sandboxe {
         })
     }
 
-    createGamePlay() {
+    createVariables() {
         const t = this
 
-        // on va stocker dans objet de tableau toutes nos valeurs pour les cases
-        for (let i = 0; i < t.gridSize; i++) {
+        // permet d'intéragir avec le DOM >>> est envoyé dans la class Cube
+        t.domEvents = new THREEx.DomEvents(t.camera, t.renderer.domElement)
 
-            let array = []
-            for (let j = 0; j < Math.pow(t.gridSize, 2); j++) array[j] = null
-            t.boardGame[i] = array
+        // élements que l'on va passer dans notre class Cube
+        t.three = {
+            scene: t.scene,
+            domEvents: t.domEvents
+        }
+
+        t.dom = {
+            $colorSlideChroma: t.$colorSlideChroma
         }
     }
 
     bindEvents() {
         const t = this
 
+        // resize
         document.addEventListener("resize", t.resize.bind(t))
 
-        // permet d'intéragir avec le DOM >>> est envoyé dans la class Cube
-        t.domEvents = new THREEx.DomEvents(t.camera, t.renderer.domElement)
-
-        // Change color
+        // change color
         t.$colorSlideChroma.addEventListener("change", t.updateCubeColor.bind(t))
 
-        // Edit button
+        // change l'alpha
+        t.$colorResult.addEventListener("click", t.updateAlphaCube.bind(t))
+
+        // edit button
         t.$buttonEdit.addEventListener("click", t.editMode.bind(t))
         t.$buttonAdd.addEventListener("click", t.addMode.bind(t))
         t.$buttonDelete.addEventListener("click", t.removeCube.bind(t))
 
-        // Watcher évènements lancés depuis les classes Cubes
+        // watcher évènements lancés depuis les classes Cubes
         window.addEventListener("hideButtonDelete", t.hideButtonDelete.bind(t))
         window.addEventListener("showButtonDelete", t.showButtonDelete.bind(t))
     }
@@ -237,34 +244,43 @@ class Sandboxe {
         // met le flag à true pour en pas repasser dans la fonction
         t.isSeen = true
 
-        let three = {
-            scene: t.scene,
-            domEvents: t.domEvents
-        }
-
         // appelle le serveur pour récupérer les cubes associées au marker
         t.cubesRegistered = [
             {
                 position: {
-                    x: 1,
+                    x: 0,
                     y: 0,
-                    z: 1
+                    z: 0
                 },
                 color: 0xff0000,
                 alpha: 0.5,
                 wireframe: false,
+                status: "show",
                 _id: 0,
             },
             {
                 position: {
-                    x: 2,
+                    x: 0,
+                    y: 0,
+                    z: 1
+                },
+                color: 0xff0000,
+                alpha: 1,
+                wireframe: false,
+                status: "show",
+                _id: 1,
+            },
+            {
+                position: {
+                    x: 0,
                     y: 0,
                     z: 2
                 },
                 color: 0x00ff00,
                 alpha: 1,
                 wireframe: false,
-                _id: 1,
+                status: "show",
+                _id: 2,
             },
             {
                 position: {
@@ -272,21 +288,71 @@ class Sandboxe {
                     y: 0,
                     z: 0
                 },
-                color: 0x0000ff,
+                color: 0xfffff,
                 alpha: 1,
-                wireframe: false,
-                _id: 2,
+                wireframe: true,
+                status: "wireframe",
+                _id: 3,
             },
             {
                 position: {
                     x: 1,
-                    y: 1,
+                    y: 0,
                     z: 1
                 },
-                color: 0x00ffff,
+                color: 0xfffff,
                 alpha: 1,
-                wireframe: false,
-                _id: 3,
+                wireframe: true,
+                status: "wireframe",
+                _id: 4,
+            },
+            {
+                position: {
+                    x: 1,
+                    y: 0,
+                    z: 2
+                },
+                color: 0xfffff,
+                alpha: 1,
+                wireframe: true,
+                status: "wireframe",
+                _id: 5,
+            },
+            {
+                position: {
+                    x: 2,
+                    y: 0,
+                    z: 0
+                },
+                color: 0xfffff,
+                alpha: 1,
+                wireframe: true,
+                status: "hidding",
+                _id: 6,
+            },
+            {
+                position: {
+                    x: 2,
+                    y: 0,
+                    z: 1
+                },
+                color: 0xfffff,
+                alpha: 1,
+                wireframe: true,
+                status: "hidding",
+                _id: 7,
+            },
+            {
+                position: {
+                    x: 2,
+                    y: 0,
+                    z: 2
+                },
+                color: 0xfffff,
+                alpha: 1,
+                wireframe: true,
+                status: "hidding",
+                _id: 8,
             }
         ]
 
@@ -294,120 +360,49 @@ class Sandboxe {
         for (let cubeRegister of t.cubesRegistered ) {
 
             // on append le cube
-            new Cube(cubeRegister, three)
-
-            // on ajoute dans notre plateau de jeu les valeurs du cube
-            t.boardGame[cubeRegister.position.y][cubeRegister.position.x + (cubeRegister.position.z * t.gridSize)] = cubeRegister
-        }
-
-        // on lance la création des cubes wireframes
-        t.createWireframe()
-    }
-
-    createWireframe(){
-        const t = this
-
-        let three = {
-            scene: t.scene,
-            domEvents: t.domEvents
-        }
-
-        for (let y = 0; y < t.boardGame.length; y++ ) {
-
-            for (let index = 0 ; index < t.boardGame[y].length; index++ ) {
-
-                // si une valeur est enregistrée
-                if ( t.boardGame[y][index] !== null && t.boardGame[y][index].wireframe === false ) {
-
-                    let cube = {
-                        position: {
-                            x: null,
-                            y: null,
-                            z: null
-                        },
-                        color: 0xffffff,
-                        wireframe: true,
-                        alpha: 1,
-                        _id: null,
-                    }
-
-                    let positions = [
-                        index - t.gridSize - 1, // NW
-                        index - t.gridSize, // N
-                        index - t.gridSize + 1, // NE
-                        index + 1, // E
-                        index + t.gridSize + 1, // SE
-                        index + t.gridSize, // S
-                        index + t.gridSize - 1, // SW
-                        index - 1 // W
-                    ]
-
-                    // vérfie s'il y a une case pour tous ses côtés
-                    // si pas de case on créer un cube
-                    // sur la meme dimension
-                    for (let sideCase of positions) {
-
-                        if ( sideCase >= 0 && t.boardGame[y][sideCase] === null && sideCase < Math.pow(t.gridSize, 2)) {
-
-                            // prépare nouvelles coordonées
-                            cube.position.x = sideCase % t.gridSize
-                            cube.position.z = (sideCase - cube.position.x) / t.gridSize
-                            cube.position.y = y
-
-                            // créer le cube
-                            new Cube(cube, three)
-
-                            // met à jour le tableau t.boardGame
-                            t.boardGame[y][sideCase] = cube
-                        }
-                    }
-
-                    // vérifie s'il n'y a pas de case sur le niveau au dessus et que la case actuelle est bien remplie de couleur
-                    if ( y < t.gridSize - 1 && t.boardGame[y+1][index] === null && t.boardGame[y][index].wireframe === false ) {
-
-                        // prépare nouvelles coordonées
-                        cube.position.x = t.boardGame[y][index].position.x
-                        cube.position.z = t.boardGame[y][index].position.z
-                        cube.position.y = y + 1
-
-                        // créer le cube
-                        new Cube(cube, three)
-
-                        // met à jour le tableau t.boardGame
-                        t.boardGame[y+1][index] = cube
-                    }
-
-                    // vérifie s'il n'y a pas de case sur le niveau au dessous et que la case actuelle est bien remplie de couleur
-                    if ( y > 0 && t.boardGame[y-1][index] === null && t.boardGame[y][index].wireframe === false ) {
-
-                        // prépare nouvelles coordonées
-                        cube.position.x = t.boardGame[y][index].position.x
-                        cube.position.z = t.boardGame[y][index].position.z
-                        cube.position.y = y - 1
-
-                        // créer le cube
-                        new Cube(cube, three)
-
-                        // met à jour le tableau t.boardGame
-                        t.boardGame[y-1][index] = cube
-                    }
-                }
-            }
+            new Cube(cubeRegister, t.three, t.dom)
         }
     }
-
-
 
     updateCubeColor() {
         const t = this
 
-        let cubeColor = t.hslToHex(t.$colorSlideChroma.value, 100, 50);
+        // change la couleur
+        let cubeColor = Website.hslToHex(t.$colorSlideChroma.value, 100, 50);
         t.$colorResult.style.backgroundColor = 'hsl(' + t.$colorSlideChroma.value + ', 100%, 50%)'
 
+        // récupère l'alpha
+        let alphaCube = t.$colorResult.style.opacity
+
+        // prépare l'event
         let event = new CustomEvent('changeColor',
             {
                 detail: {
                     color: cubeColor,
+                    alpha: alphaCube
+                }
+            })
+
+        // trigger event de mise à jour de la couleur
+        window.dispatchEvent(event)
+    }
+
+    updateAlphaCube() {
+        const t = this
+
+        // change l'alpha
+        let alphaCube = Number(t.$colorResult.style.opacity) === 1 ? 0.5 : 1
+        t.$colorResult.style.opacity = alphaCube
+
+        // récupère la couleur
+        let cubeColor = Website.hslToHex(t.$colorSlideChroma.value, 100, 50);
+
+        // prépare l'event
+        let event = new CustomEvent('changeColor',
+            {
+                detail: {
+                    color: cubeColor,
+                    alpha: alphaCube,
                 }
             })
 
@@ -428,14 +423,17 @@ class Sandboxe {
 
             // Mode edition à false -> dé-autoriser le click sur la grille
             window.isEdition = false
-        } else {
 
-            // trigger change pour setter la couleur dans le result
-            t.$colorSlideChroma.dispatchEvent(new Event('change'))
+            // désélectionne tous les cubes
+            window.dispatchEvent( new CustomEvent("cubeDeselected") )
+        } else {
 
             // changement des boutons
             t.$colors.classList.remove('hidden')
             t.$buttonAdd.classList.add('hidden')
+
+            // trigger change pour setter la couleur dans le result petit timer pour l'alpha
+            t.$colorSlideChroma.dispatchEvent(new Event('change'))
 
             // Mode edition à true -> autoriser le click sur la grille
             window.isEdition = true
@@ -458,6 +456,12 @@ class Sandboxe {
 
             // trigger pour cacher les cubes en wireframe
             window.dispatchEvent( new CustomEvent("hideWireframe") )
+
+            // Mode adition à false -> dé-autoriser le click sur la grille
+            window.isAddition = false
+
+            // désélectionne tous les cubes
+            window.dispatchEvent( new CustomEvent("cubeDeselected") )
         } else {
 
             // trigger change pour setter la couleur dans le result
@@ -469,6 +473,9 @@ class Sandboxe {
             // changement des boutons
             t.$colors.classList.remove('hidden')
             t.$buttonEdit.classList.add('hidden')
+
+            // Mode adition à true -> autoriser le click sur la grille
+            window.isAddition = true
         }
 
         // met à jour la class
@@ -506,35 +513,5 @@ class Sandboxe {
         const t = this
 
         t.$buttonDelete.classList.remove('hidden')
-    }
-
-    hslToHex(h, s, l) {
-        h /= 360
-        s /= 100
-        l /= 100
-        let r, g, b
-        if (s === 0) {
-            r = g = b = l // achromatic
-        } else {
-            const hue2rgb = (p, q, t) => {
-                if (t < 0) t += 1
-                if (t > 1) t -= 1
-                if (t < 1 / 6) return p + (q - p) * 6 * t
-                if (t < 1 / 2) return q
-                if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6
-                return p
-            }
-            const q = l < 0.5 ? l * (1 + s) : l + s - l * s
-            const p = 2 * l - q
-            r = hue2rgb(p, q, h + 1 / 3)
-            g = hue2rgb(p, q, h)
-            b = hue2rgb(p, q, h - 1 / 3)
-        }
-        const toHex = x => {
-            const hex = Math.round(x * 255).toString(16)
-            return hex.length === 1 ? '0' + hex : hex
-        }
-
-        return `0x${toHex(r)}${toHex(g)}${toHex(b)}`
     }
 }

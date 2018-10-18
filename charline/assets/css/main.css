@@ -26,6 +26,8 @@ html {
     position: absolute;
     top: 0;
     left: 0;
+    right: 0;
+    bottom: 0;
     overflow: hidden;
 }
 
@@ -89,6 +91,7 @@ html {
     width: 35px;
     height: 35px;
     border: 1px solid black;
+    opacity: 1;
 }
 
 .sandboxe-game__footer {
