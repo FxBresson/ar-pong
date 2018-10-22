@@ -38,13 +38,14 @@ html {
     width: 50vw;
     z-index: 1;
     padding: 25px;
+    height: 100px;
 }
 
 .sandboxe-game__header img {
     display: block;
     vertical-align: middle;
-    width: 35px;
-    height: 35px;
+    width: auto;
+    height: 100%;
 }
 
 .sandboxe-game__interface {
@@ -60,19 +61,24 @@ html {
     width: 35px;
     height: 35px;
     border-radius: 100%;
-    border: solid 1px black;
+    border: solid 1px #272932;
     position: relative;
     margin-bottom: 20px;
     transition: all 0.5s ease-out;
 }
 
-.sandboxe-game__button img {
+.sandboxe-game__button svg {
     width: 60%;
     height: 60%;
     position: absolute;
     top: 45%;
     left: 50%;
     transform: translate(-50%, -50%);
+    overflow: visible;
+}
+
+.sandboxe-game__button path {
+    transition: all 0.5s ease-out;
 }
 
 .sandboxe-game__colors  {
@@ -90,7 +96,7 @@ html {
     border-radius: 100%;
     width: 35px;
     height: 35px;
-    border: 1px solid black;
+    border: 1px solid #272932;
     opacity: 1;
 }
 
@@ -102,7 +108,7 @@ html {
     font-size: 10px;
     padding: 5px 0;
     z-index: 1;
-    background-color: black;
+    background-color: #272932;
     color: white;
 }
 
@@ -112,11 +118,24 @@ html {
     display: none;
 }
 
-.active {
-    background-color: white;
-    border-color: white;
+.not-active {
+    opacity: 0.1;
+    pointer-events: none;
+    background-color: #272932;
 }
 
+.not-active path {
+    fill: white;
+}
+
+.active {
+    background-color: #f05d5e;
+    border-color: #f05d5e;
+}
+
+.active path {
+    fill: white;
+}
 /*.active {*/
     /*visibility: visible;*/
 /*}*/
