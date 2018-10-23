@@ -7,6 +7,7 @@ html, body {
     padding: 0;
     width: 100%;
     height: 100%;
+    background-color: #272932;
 }
 
 #space {
@@ -14,8 +15,6 @@ html, body {
     perspective: 500px;
     width: 100%;
     height: 100%;
-
-    
 }
 
 .space-reset-ctn {
@@ -54,7 +53,6 @@ html, body {
     transform-style: preserve-3d;
     position: relative;
     margin: auto;
-    
 }
 
 .face {
@@ -62,8 +60,9 @@ html, body {
     height: 100%;
     transform-style: preserve-3d;
     backface-visibility: hidden;
-    border: 15px black solid;
+    border: 15px #272932 solid;
     position: absolute;
+    font-size: 20px;
 }
 
 /* 
@@ -90,23 +89,23 @@ html, body {
 }
 
 .mouse-scroll {
-    border: 3px solid #fff;
+    border: 2px solid #272932;
     cursor: default;
     display: block;
     width: 32px;
     height: 48px;
     border-radius: 50px;
     margin: 0 auto;
-    transform: translate(0, 0);
+    transform: translate(0, 100px);
     overflow: hidden;
     font-size: 10000px;
 }
 
 .mouse-scroll:after {
-    background-color: #fff;
+    background-color: #272932;
     content: '';
-    width: 4px;
-    height: 8px;
+    width: 2px;
+    height: 4px;
     position: absolute;
     left: 50%;
     top: 7px;
@@ -152,13 +151,47 @@ html, body {
 
 
 .front {
-    background-color: rgba(240,164,132,0.8);
+    background-color: #ffcaa7;
     transform: translateZ(50vh);
 }
 
 .front img {
     margin-bottom: 3rem;
-    width: 10rem;
+    width: 13rem;
+}
+
+.content .icon-button {
+    width: 60px;
+    height: 60px;
+    background-color: white;
+    border-radius: 100%;
+    padding: 10px;
+    text-align: center;
+    display: inline-block;
+    line-height: 34px;
+    margin-left: 30px;
+}
+
+.content .icon-button img {
+    width: 60%;
+    height: 60%;
+    vertical-align: middle;
+    display: inline-block;
+}
+
+
+.content .title {
+    font-weight: 700;
+    margin-bottom: 5rem;
+    font-size: 30px;
+}
+
+.content video {
+    width: 70%;
+}
+
+.content .copyright {
+    transform: translateY(100px);
 }
 
 .back {
@@ -167,7 +200,7 @@ html, body {
 }
 
 .right {
-    background-color: #E06663;
+    background-color: #a2b894;
     transform: rotateY(90deg) translateZ(50vh);
 }
 
@@ -182,13 +215,17 @@ html, body {
 }
 
 .top {
-    background-color: #316F72 ;
+    background-color: #E06663;
     transform: rotateX(90deg) translateZ(50vh);
 }
 
 .bottom {
     background-color: #E06663;
     transform: rotateX(-90deg) translateZ(50vh);
+}
+
+.back, .top {
+    color: white
 }
 
 body[class^=step] .translate-ctn {
