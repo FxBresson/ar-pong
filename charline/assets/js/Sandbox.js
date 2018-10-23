@@ -14,6 +14,7 @@ class Sandboxe {
         t.$buttonAdd = document.querySelector(".sandboxe-game__button--add")
         t.$colors = document.querySelector(".sandboxe-game__colors")
         t.$colorSlideChroma = document.querySelector(".sandboxe-game__slide-chroma")
+        t.$colorResultContainer = document.querySelector(".sandboxe-game__result-container")
         t.$colorResult = document.querySelector(".sandboxe-game__result")
         t.$colorResult.style.opacity = 1
 
@@ -131,7 +132,7 @@ class Sandboxe {
         t.$colorSlideChroma.addEventListener("change", t.updateCubeColor.bind(t))
 
         // change l'alpha
-        t.$colorResult.addEventListener("click", t.updateAlphaCube.bind(t))
+        t.$colorResultContainer.addEventListener("click", t.updateAlphaCube.bind(t))
 
         // edit button
         t.$buttonEdit.addEventListener("click", t.editMode.bind(t))
