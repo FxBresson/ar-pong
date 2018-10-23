@@ -61,7 +61,7 @@ html {
     width: 35px;
     height: 35px;
     border-radius: 100%;
-    border: solid 1px #272932;
+    border: solid 1px #f05d5e;
     position: relative;
     margin-bottom: 20px;
     transition: all 0.5s ease-out;
@@ -96,7 +96,6 @@ html {
     border-radius: 100%;
     width: 35px;
     height: 35px;
-    border: 1px solid #272932;
     opacity: 1;
 }
 
@@ -121,7 +120,6 @@ html {
 .not-active {
     opacity: 0.1;
     pointer-events: none;
-    background-color: #272932;
 }
 
 .not-active path {

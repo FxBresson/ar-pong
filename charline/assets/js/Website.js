@@ -19,7 +19,7 @@ class Website {
             'patt.hiro',
             'patt.kanji',
             'patt.letterA',
-            'patt.letterB'
+            'patt.letterB',
         ]
 
         new Sandboxe({pattern: 'patt.hiro', id: 'ar-sandbox'})

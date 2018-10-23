@@ -105,12 +105,6 @@ class Cube {
         // si click sur un cube on lui change son "activité"
         t.domEvents.addEventListener(t.mesh, 'click', function () {
 
-            // voir s'il faut efface le bouton delete
-            if (window.isEdition ) {
-                if (t.mesh.selected) window.dispatchEvent(new CustomEvent('hideButtonDelete'))
-                else window.dispatchEvent(new CustomEvent('showButtonDelete'))
-            }
-
             // sélection de couleur
             if (window.isEdition || window.isAddition) {
 

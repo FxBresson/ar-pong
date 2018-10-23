@@ -139,8 +139,6 @@ class Sandboxe {
         t.$buttonDelete.addEventListener("click", t.removeCube.bind(t))
 
         // watcher évènements lancés depuis les classes Cubes
-        window.addEventListener("hideButtonDelete", t.hideButtonDelete.bind(t))
-        window.addEventListener("showButtonDelete", t.showButtonDelete.bind(t))
     }
 
     resize() {
@@ -367,13 +365,16 @@ class Sandboxe {
     updateCubeColor() {
         const t = this
 
+        // random hsl pour générer les couleurs dans la palette Wes Anderson
+        let randomS = Math.random() * (80 - 50) + 50
+        let randomL = Math.random() * (100 - 50) + 50
+
         // change la couleur
-        let cubeColor = Website.hslToHex(t.$colorSlideChroma.value, 100, 50);
-        t.$colorResult.style.backgroundColor = 'hsl(' + t.$colorSlideChroma.value + ', 100%, 50%)'
+        let cubeColor = Website.hslToHex(t.$colorSlideChroma.value, randomS, randomL);
+        t.$colorResult.style.backgroundColor = 'hsl(' + t.$colorSlideChroma.value + ', ' + randomS + '%, ' + randomL + '%)'
 
         // récupère l'alpha
         let alphaCube = t.$colorResult.style.opacity
-
         // prépare l'event
         let event = new CustomEvent('changeColor',
             {
@@ -419,7 +420,7 @@ class Sandboxe {
             // changement des boutons
             t.$colors.classList.add('hidden')
             t.$buttonDelete.classList.add('hidden')
-            t.$buttonAdd.classList.remove('hidden')
+            t.$buttonAdd.classList.remove('not-active')
 
             // Mode edition à false -> dé-autoriser le click sur la grille
             window.isEdition = false
@@ -430,7 +431,8 @@ class Sandboxe {
 
             // changement des boutons
             t.$colors.classList.remove('hidden')
-            t.$buttonAdd.classList.add('hidden')
+            t.$buttonDelete.classList.remove('hidden')
+            t.$buttonAdd.classList.add('not-active')
 
             // trigger change pour setter la couleur dans le result petit timer pour l'alpha
             t.$colorSlideChroma.dispatchEvent(new Event('change'))
@@ -452,7 +454,7 @@ class Sandboxe {
             // changement des boutons
             t.$colors.classList.add('hidden')
             t.$buttonDelete.classList.add('hidden')
-            t.$buttonEdit.classList.remove('hidden')
+            t.$buttonEdit.classList.remove('not-active')
 
             // trigger pour cacher les cubes en wireframe
             window.dispatchEvent( new CustomEvent("hideWireframe") )
@@ -472,7 +474,7 @@ class Sandboxe {
 
             // changement des boutons
             t.$colors.classList.remove('hidden')
-            t.$buttonEdit.classList.add('hidden')
+            t.$buttonEdit.classList.add('not-active')
 
             // Mode adition à true -> autoriser le click sur la grille
             window.isAddition = true
@@ -489,29 +491,5 @@ class Sandboxe {
 
         // trigger event de suppression du cube
         window.dispatchEvent(event)
-
-        // enlève le boutton delete
-        t.hideButtonDelete()
-    }
-
-    hideButtonDelete() {
-        const t = this
-
-        let hasActiveCube = false
-
-        // vérifie si on a toujours un cube de sectionné on n'efface pas le bouton delete
-        t.scene.traverse( function( node ) {
-            if ( node instanceof THREE.Mesh ) {
-                if (node.active) hasActiveCube = true
-            }
-        })
-
-        if (!hasActiveCube) t.$buttonDelete.classList.add('hidden')
-    }
-
-    showButtonDelete() {
-        const t = this
-
-        t.$buttonDelete.classList.remove('hidden')
     }
 }
