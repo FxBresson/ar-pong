@@ -119,6 +119,38 @@ html, body {
     -webkit-animation: 1.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) 0s normal none infinite scrollAnimation;
 }
 
+@keyframes scrollAnimation {
+	0%, 20% {
+		transform: translateY(0px) scaleY(1) scaleX(1) translateZ(0px);
+	}
+
+	10% {
+		opacity: 1;
+		transform: translateY(0px) scaleY(1.2) scaleX(1.2) translateZ(0px);
+	}
+
+	100% {
+		opacity: 0.01;
+		transform: translateY(16px) scaleY(2.5) scaleX(0.5) translateZ(0px);
+	}
+}
+@-webkit-keyframes scrollAnimation {
+	0%, 20% {
+		-webkit-transform: translateY(0px) scaleY(1) scaleX(1) translateZ(0px);
+	}
+
+	10% {
+		opacity: 1;
+		-webkit-transform: translateY(0px) scaleY(1.2) scaleX(1.2) translateZ(0px);
+	}
+
+	100% {
+		opacity: 0.01;
+		-webkit-transform: translateY(16px) scaleY(2.5) scaleX(0.5) translateZ(0px);
+	}
+}
+
+
 .front {
     background-color: rgba(240,164,132,0.8);
     transform: translateZ(50vh);
