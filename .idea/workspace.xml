@@ -72,7 +72,7 @@
             <entry file="file://$PROJECT_DIR$/charline/assets/js/Cube.js">
               <provider selected="true" editor-type-id="text-editor">
                 <state relative-caret-position="391">
-                  <caret line="99" column="5" selection-start-line="99" selection-start-column="5" selection-end-line="99" selection-end-column="5" />
+                  <caret line="103" column="5" selection-start-line="103" selection-start-column="5" selection-end-line="103" selection-end-column="5" />
                 </state>
               </provider>
             </entry>
@@ -220,41 +220,6 @@
             <path>
               <item name="ar-sandbox" type="b2602c69:ProjectViewProjectNode" />
               <item name="ar-sandbox" type="462c0819:PsiDirectoryNode" />
-              <item name="charline" type="462c0819:PsiDirectoryNode" />
-              <item name="assets" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="ar-sandbox" type="b2602c69:ProjectViewProjectNode" />
-              <item name="ar-sandbox" type="462c0819:PsiDirectoryNode" />
-              <item name="charline" type="462c0819:PsiDirectoryNode" />
-              <item name="assets" type="462c0819:PsiDirectoryNode" />
-              <item name="css" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="ar-sandbox" type="b2602c69:ProjectViewProjectNode" />
-              <item name="ar-sandbox" type="462c0819:PsiDirectoryNode" />
-              <item name="charline" type="462c0819:PsiDirectoryNode" />
-              <item name="assets" type="462c0819:PsiDirectoryNode" />
-              <item name="img" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="ar-sandbox" type="b2602c69:ProjectViewProjectNode" />
-              <item name="ar-sandbox" type="462c0819:PsiDirectoryNode" />
-              <item name="charline" type="462c0819:PsiDirectoryNode" />
-              <item name="assets" type="462c0819:PsiDirectoryNode" />
-              <item name="img" type="462c0819:PsiDirectoryNode" />
-              <item name="icons" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="ar-sandbox" type="b2602c69:ProjectViewProjectNode" />
-              <item name="ar-sandbox" type="462c0819:PsiDirectoryNode" />
-              <item name="charline" type="462c0819:PsiDirectoryNode" />
-              <item name="assets" type="462c0819:PsiDirectoryNode" />
-              <item name="js" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="ar-sandbox" type="b2602c69:ProjectViewProjectNode" />
-              <item name="ar-sandbox" type="462c0819:PsiDirectoryNode" />
               <item name="fx" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -306,12 +271,12 @@
       <updated>1539516590939</updated>
       <workItem from="1539516592253" duration="2184000" />
       <workItem from="1540160082414" duration="254000" />
-      <workItem from="1540326197745" duration="4188000" />
+      <workItem from="1540326197745" duration="4460000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="6626000" />
+    <option name="totallyTimeSpent" value="6898000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1680" height="995" extended-state="0" />
@@ -370,7 +335,7 @@
     <entry file="file://$PROJECT_DIR$/charline/assets/js/Cube.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="391">
-          <caret line="99" column="5" selection-start-line="99" selection-start-column="5" selection-end-line="99" selection-end-column="5" />
+          <caret line="103" column="5" selection-start-line="103" selection-start-column="5" selection-end-line="103" selection-end-column="5" />
         </state>
       </provider>
     </entry>
