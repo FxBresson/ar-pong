@@ -23,120 +23,56 @@ app.get('/', function(req, res){
 });
 
 
+const gridSize = 5;
+
 let sandboxes = {
     hiro: {
         id: 'hiro',
         pattern: 'patt.hiro', 
-        cubes: [
-            {
-                position: {
-                    x: 0,
-                    y: 0,
-                    z: 0
-                },
-                color: 0xff0000,
-                alpha: 0.5,
-                status: "show",
-                _id: 0,
-            },
-            {
-                position: {
-                    x: 0,
-                    y: 0,
-                    z: 1
-                },
-                color: 0xff0000,
-                alpha: 1,
-                status: "show",
-                _id: 1,
-            },
-            {
-                position: {
-                    x: 0,
-                    y: 0,
-                    z: 2
-                },
-                color: 0x00ff00,
-                alpha: 1,
-                status: "show",
-                _id: 2,
-            },
-            {
-                position: {
-                    x: 1,
-                    y: 0,
-                    z: 0
-                },
-                color: 0xfffff,
-                alpha: 1,
-                status: "wireframe",
-                _id: 3,
-            },
-            {
-                position: {
-                    x: 1,
-                    y: 0,
-                    z: 1
-                },
-                color: 0xfffff,
-                alpha: 1,
-                status: "wireframe",
-                _id: 4,
-            },
-            {
-                position: {
-                    x: 1,
-                    y: 0,
-                    z: 2
-                },
-                color: 0xfffff,
-                alpha: 1,
-                status: "wireframe",
-                _id: 5,
-            },
-            {
-                position: {
-                    x: 2,
-                    y: 0,
-                    z: 0
-                },
-                color: 0xfffff,
-                alpha: 1,
-                status: "hidding",
-                _id: 6,
-            },
-            {
-                position: {
-                    x: 2,
-                    y: 0,
-                    z: 1
-                },
-                color: 0xfffff,
-                alpha: 1,
-                status: "hidding",
-                _id: 7,
-            },
-            {
-                position: {
-                    x: 2,
-                    y: 0,
-                    z: 2
-                },
-                color: 0xfffff,
-                alpha: 1,
-                status: "hidding",
-                _id: 8,
+        cubes: []
+    }
+}
+
+var incrementalId = 0;
+
+var midSize = Math.floor(gridSize/2);
+
+for (var y = 0; y<=gridSize; y++) {
+    for (var z = -midSize; z<=midSize; z++) {
+        for (var x = -midSize; x<=midSize; x++) {
+
+            var status = 'hidding';
+
+            if ( (y === 0 || y === 1) && (x >= -1 && x<= 1 ) &&  (z >= -1 && z<= 1 ) ) {
+                status = 'wireframe'
+                if (x === 0 && y === 0 && z === 0) {
+                    status = 'show'
+                }
             }
-        ]
+
+            var center = (x === Math.floor(gridSize/2) && z === Math.floor(gridSize/2) && y === 0); 
+
+            sandboxes.hiro.cubes.push({
+                position: {
+                    x: x,
+                    y: y,
+                    z: z
+                },
+                color: 'hsl(0, 0%, 100%)',
+                alpha: 1,
+                status: status,
+                _id: incrementalId++,
+            })
+        }
     }
 }
 
 
-function updateCube(newProps) {
+
+function updateCube(newProps, socket) {
     let updatedCube = Object.assign({}, sandboxes.hiro.cubes[newProps._id], newProps);
     sandboxes.hiro.cubes[newProps._id] = updatedCube;
-    console.log(updatedCube)
-    io.emit('cube_update', updatedCube);
+    io.emit('cube_update', updatedCube, socket);
 }
 
 
@@ -150,7 +86,24 @@ io.on('connection', function(socket){
 
     socket.on('cube_color', (newProps) => updateCube(newProps))
     socket.on('cube_remove', (newProps) => updateCube(newProps))
-    socket.on('cube_add', (newProps) => updateCube(newProps))
+    socket.on('cube_add', (newProps) => {
+        updateCube(newProps, socket.id)
+
+        let origin = sandboxes.hiro.cubes[newProps._id].position
+
+        let cubes = sandboxes.hiro.cubes.filter(c => {
+            return (c.position.y >= origin.y-1 && c.position.y<= origin.y+1) && (c.position.x >= origin.x-1 && c.position.x<= origin.x+1 ) &&  (c.position.z >= origin.z-1 && c.position.z<= origin.z+1 )
+        });
+
+        for (cubeToUpdate of cubes) {
+            if (cubeToUpdate.status === 'hidding') {
+                updateCube({
+                    _id: cubeToUpdate._id,
+                    status: 'wireframe'
+                }, socket.id)
+            }
+        }
+    })
 
 });
 

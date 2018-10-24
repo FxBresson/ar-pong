@@ -141,6 +141,8 @@ class Sandbox {
         t.$buttonDelete.addEventListener("click", t.removeCube.bind(t))
 
         // watcher évènements lancés depuis les classes Cubes
+
+        // TODO: Reset alpha/color when CLicking on cube
     }
 
     resize() {
@@ -242,21 +244,20 @@ class Sandbox {
         const t = this
 
         // random hsl pour générer les couleurs dans la palette Wes Anderson
-        let randomS = Math.random() * (80 - 50) + 50
-        let randomL = Math.random() * (100 - 50) + 50
+        // let randomS = Math.random() * (80 - 50) + 50
+        // let randomL = Math.random() * (100 - 50) + 50
+        let randomS = 75
+        let randomL = 65
 
         // change la couleur
-        let cubeColor = Website.hslToHex(t.$colorSlideChroma.value, randomS, randomL);
-        t.$colorResult.style.backgroundColor = 'hsl(' + t.$colorSlideChroma.value + ', ' + randomS + '%, ' + randomL + '%)'
+        let cubeColor = 'hsl(' + t.$colorSlideChroma.value + ', ' + randomS + '%, ' + randomL + '%)'
+        t.$colorResult.style.backgroundColor = cubeColor
 
-        // récupère l'alpha
-        let alphaCube = t.$colorResult.style.opacity
         // prépare l'event
         let event = new CustomEvent('changeColor',
             {
                 detail: {
                     color: cubeColor,
-                    alpha: alphaCube
                 }
             })
 
@@ -269,16 +270,11 @@ class Sandbox {
 
         // change l'alpha
         let alphaCube = Number(t.$colorResult.style.opacity) === 1 ? 0.5 : 1
-        t.$colorResult.style.opacity = alphaCube
-
-        // récupère la couleur
-        let cubeColor = Website.hslToHex(t.$colorSlideChroma.value, 100, 50);
-
+    
         // prépare l'event
         let event = new CustomEvent('changeColor',
             {
                 detail: {
-                    color: cubeColor,
                     alpha: alphaCube,
                 }
             })

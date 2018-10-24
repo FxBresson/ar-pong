@@ -23,8 +23,8 @@ class Cube {
         t.$colorSlideChroma = dom.$colorSlideChroma
 
         // grille
-        t.gridSize = 3
-        t.sizeCube = 1
+        t.gridSize = 5
+        t.sizeCube = 0.5
 
         t.modificationPhase = false
 
@@ -39,10 +39,8 @@ class Cube {
         t.bindEvents()
     }
 
-    update(cube) {
+    update(cube, socketId) {
         const t = this
-
-        console.log(cube._id, t.id, !t.mesh.selected, t.modificationPhase)
 
         if (cube._id === t.id) {
         // N'update pas le cube s'il est selectionné
@@ -51,13 +49,10 @@ class Cube {
                 t.color = cube.color
                 t.alpha = cube.alpha
                 t.status = cube.status
-                t.updateStatus(t.status)
-
-                console.log(cube.color)
-                console.log(Number(cube.color))
+                t.updateStatus(t.status, socketId === socket.id)
 
                 let material = new THREE.MeshBasicMaterial({
-                    color: Number(t.color),
+                    color: new THREE.Color(t.color),
                     wireframe: t.status === "wireframe",
                     transparent: true,
                     opacity: t.alpha
@@ -69,18 +64,18 @@ class Cube {
         }
     }
 
-    updateStatus(newStatus) {
+    updateStatus(newStatus, mustSelect) {
         const t = this
 
         if (t.status === "hidding") {
-            t.mesh.selected = false
+            if(mustSelect) t.mesh.selected = false
             t.mesh.visible = false
         } else if (t.status === "show") {
-            t.mesh.selected = true
+            if(mustSelect) t.mesh.selected = true
             t.mesh.visible = true
 
         } else if (t.status === "wireframe") {
-            t.mesh.selected = true
+            if(mustSelect) t.mesh.selected = false
             t.mesh.visible = true
             t.mesh.material = t.texture.wireframe
         }
@@ -92,14 +87,14 @@ class Cube {
         t.texture = {}
 
         t.texture.reset = new THREE.MeshBasicMaterial({
-            color: 0xffffff,
+            color: new THREE.Color('hsl(0, 0%, 100%)'),
             wireframe: false,
             transparent: true,
             opacity: 1
         })
 
         t.texture.wireframe = new THREE.MeshBasicMaterial({
-            color: 0xffffff,
+            color: new THREE.Color('hsl(0, 0%, 100%)'),
             wireframe: true,
             transparent: true,
             opacity: 1
@@ -132,7 +127,7 @@ class Cube {
         // positionne le cube
         t.mesh.position.x = (t.x * t.sizeCube) - ((t.gridSize - 1) / 2 * t.sizeCube)
         t.mesh.position.z = (t.z * t.sizeCube) - ((t.gridSize - 1) / 2 * t.sizeCube)
-        t.mesh.position.y = t.y
+        t.mesh.position.y = (t.y * t.sizeCube)
 
         // donne nom unique au cube
         t.mesh.name = t.id
@@ -173,7 +168,7 @@ class Cube {
         window.addEventListener("showWireframe", t.showWireframe.bind(t))
         window.addEventListener("hideWireframe", t.hideWireframe.bind(t))
         window.addEventListener("cubeDeselected", t.cubeDeselected.bind(t))
-        socket.on('cube_update', cubeInfos => t.update(cubeInfos))
+        socket.on('cube_update', (cubeInfos, socketId) => t.update(cubeInfos, socketId))
     }
 
     cubeSelected() {
@@ -208,8 +203,8 @@ class Cube {
 
             socket.emit('cube_color', {
                 _id: t.id,
-                color: e.detail.color,
-                alpha: e.detail.alpha
+                color: e.detail.color ? e.detail.color : t.color,
+                alpha: e.detail.alpha ? e.detail.alpha : t.alpha
             })
 
             
