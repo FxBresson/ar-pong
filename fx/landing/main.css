@@ -89,6 +89,13 @@ html, body {
     font-family: 'Chakra Petch', sans-serif;
 }
 
+.mouse {
+    position: absolute;
+    bottom: 15%;
+    left: 50%;
+    transform: translate(-50%);
+}
+
 .mouse-scroll {
     border: 2px solid #272932;
     cursor: default;
@@ -111,7 +118,7 @@ html, body {
     left: 50%;
     top: 7px;
     border-radius: 4px;
-    margin-left: -2px;
+    margin-left: -1px;
     opacity: 1;
     transform: translateY(0px) scaleY(1) scaleX(1) translateZ(0px);
     -webkit-transform: translateY(0px) scaleY(1) scaleX(1) translateZ(0px);
@@ -195,6 +202,14 @@ html, body {
     transform: translateY(100px);
 }
 
+.front hr {
+    width: 16%;
+    border-color: #000;
+    border-width: 0.5px;
+    margin-top: 4%;
+    margin-bottom: 4%;
+}
+
 .back {
     background-color: #316F72 ;
     transform: rotateY(180deg) translateZ(50vh);
@@ -208,6 +223,14 @@ html, body {
 .right img {
     margin-top: 3rem;
     width: 10rem;
+}
+
+.right .bottom-copy {
+    position: absolute;
+    bottom: 0%;
+    left: 50%;
+    transform: translate(-50%);
+    font-family: 'Chakra Petch', sans-serif;
 }
 
 .left {
