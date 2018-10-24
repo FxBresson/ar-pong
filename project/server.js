@@ -18,8 +18,12 @@ var io = require('socket.io')(httpsServer, {secure: true});
 
 // Basic server config ====================
 app.use(express.static(path.join(__dirname, 'www')));
+app.get('/ar', function(req, res){
+    res.sendFile(path.join(__dirname, 'www/app.html'));
+});
+
 app.get('/', function(req, res){
-    res.sendFile(path.join(__dirname, 'www/event.html'));
+    res.sendFile(path.join(__dirname, 'www/landing.html'));
 });
 
 
