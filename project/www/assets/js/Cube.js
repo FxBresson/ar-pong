@@ -125,8 +125,8 @@ class Cube {
         t.mesh = new THREE.Mesh(t.geometry, material)
 
         // positionne le cube
-        t.mesh.position.x = (t.x * t.sizeCube) - ((t.gridSize - 1) / 2 * t.sizeCube)
-        t.mesh.position.z = (t.z * t.sizeCube) - ((t.gridSize - 1) / 2 * t.sizeCube)
+        t.mesh.position.x = (t.x * t.sizeCube)
+        t.mesh.position.z = (t.z * t.sizeCube)
         t.mesh.position.y = (t.y * t.sizeCube)
 
         // donne nom unique au cube
