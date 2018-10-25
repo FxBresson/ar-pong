@@ -125,8 +125,8 @@ class Cube {
         t.mesh = new THREE.Mesh(t.geometry, material)
 
         // positionne le cube
-        t.mesh.position.x = (t.x * t.sizeCube) - ((t.gridSize - 1) / 2 * t.sizeCube)
-        t.mesh.position.z = (t.z * t.sizeCube) - ((t.gridSize - 1) / 2 * t.sizeCube)
+        t.mesh.position.x = (t.x * t.sizeCube)
+        t.mesh.position.z = (t.z * t.sizeCube)
         t.mesh.position.y = (t.y * t.sizeCube)
 
         // donne nom unique au cube
@@ -137,6 +137,10 @@ class Cube {
 
         // prépare la selection
         t.mesh.selected = false
+
+        // ajoute à l'ombre
+        t.mesh.castShadow = true;
+        t.mesh.receiveShadow = true;
 
         // ajoute à notre groupe qui va l'ajouter à la scène
         grid.add(t.mesh)
