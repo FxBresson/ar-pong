@@ -138,6 +138,10 @@ class Cube {
         // prépare la selection
         t.mesh.selected = false
 
+        // ajoute à l'ombre
+        t.mesh.castShadow = true;
+        t.mesh.receiveShadow = true;
+
         // ajoute à notre groupe qui va l'ajouter à la scène
         grid.add(t.mesh)
     }

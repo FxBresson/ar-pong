@@ -47,8 +47,8 @@ class Sandbox {
         const t = this
 
         t.createRenderer()
-        t.createCamera()
         t.createLight()
+        t.createCamera()
         t.createArToolKitSource()
 
         t.createVariables()
@@ -67,9 +67,12 @@ class Sandbox {
 
         // création éléments
         t.renderer = new THREE.WebGLRenderer({
-            antialias: true,
+            // antialias: true,
             alpha: true
         })
+
+        t.renderer.shadowMap.type = THREE.PCFSoftShadowMap
+        t.renderer.shadowMap.enabled = true
 
         // lui ajoute les propriétés
         t.renderer.setClearColor(new THREE.Color('lightgrey'), 0)
@@ -90,8 +93,23 @@ class Sandbox {
     createLight() {
         const t = this
 
-        let light = new THREE.PointLight(0xffffff, 5, 100);
-        t.scene.add(light)
+        t.ambient = new THREE.AmbientLight( 0x666666 )
+        t.scene.add( t.ambient )
+
+        // set la lumière qui va faire l'ombre
+        t.directionalLight = new THREE.DirectionalLight( 'white' )
+        t.directionalLight.position.set( 1, 2 , 0.3  ).setLength(2)
+        t.directionalLight.shadow.mapSize.set(128,128)
+        t.directionalLight.shadow.camera.bottom = - 0.6
+        t.directionalLight.shadow.camera.top = 1 + 0.6 + 1
+        t.directionalLight.shadow.camera.right = 1 + 0.6 + 1
+        t.directionalLight.shadow.camera.left = -1 - 0.6 - 1
+        t.directionalLight.castShadow = true
+
+        // t.scene.add(new THREE.CameraHelper( t.directionalLight.shadow.camera )) // HELPER
+
+        // ajoute à la scene
+        t.scene.add( t.directionalLight )
     }
 
     createArToolKitSource() {
@@ -140,8 +158,6 @@ class Sandbox {
         t.$buttonAdd.addEventListener("click", t.addMode.bind(t))
         t.$buttonDelete.addEventListener("click", t.removeCube.bind(t))
 
-        // watcher évènements lancés depuis les classes Cubes
-
         // TODO: Reset alpha/color when CLicking on cube
     }
 
@@ -178,27 +194,33 @@ class Sandbox {
         t.onRenderFcts.push(() => {
             if (t.arToolkitSource.ready === false) return
             t.arToolkitContext.update(t.arToolkitSource.domElement)
+
+            t.scene.visible = t.camera.visible
         })
     }
 
     initMarker() {
         const t = this
 
+        // ajoute le marker que l'on doit "voir" à notre grille
+        new THREEx.ArMarkerControls(t.arToolkitContext, t.camera, {
+            type: 'pattern',
+            patternUrl: THREEx.ArToolkitContext.baseURL + t.pattern,
+            changeMatrixMode: 'cameraTransformMatrix'
+        })
+
+        t.scene.visible = false
+
         // création d'un groupe d'éléments
         let grid = new THREE.Group()
-
-        // donne un nom au groupe pour le récupérer dans la scene
-        grid.name = 'grid'
 
         // ajoute à la scene
         t.scene.add(grid)
 
-        // ajoute le marker que l'on doit "voir" à notre grille
-        new THREEx.ArMarkerControls(t.arToolkitContext, grid, {
-            type: 'pattern',
-            patternUrl: THREEx.ArToolkitContext.baseURL + t.pattern,
-        })
+        // donne un nom au groupe pour le récupérer dans la scene
+        grid.name = 'grid'
     }
+
 
     initRenderer() {
         const t = this
@@ -238,6 +260,23 @@ class Sandbox {
             // on append le cube
             new Cube(cube, t.three, t.dom)
         }
+
+        // récupère notre grille dans notre scene
+        let grid = t.scene.getObjectByName('grid')
+
+        // ajoute BG transprent
+        let material = new THREE.ShadowMaterial();
+        material.opacity = 0.3
+        let geometry = new THREE.PlaneGeometry(t.gridSize * t.gridSize, t.gridSize * t.gridSize)
+        let planeMesh = new THREE.Mesh( geometry, material)
+        planeMesh.receiveShadow = true
+        planeMesh.depthWrite = false
+        planeMesh.rotation.x = -Math.PI/2
+        planeMesh.position.y = -1
+        grid.add(planeMesh)
+
+        // fixe la grille
+        t.directionalLight.target = grid
     }
 
     updateCubeColor() {
