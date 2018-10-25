@@ -309,6 +309,7 @@ class Sandbox {
 
         // change l'alpha
         let alphaCube = Number(t.$colorResult.style.opacity) === 1 ? 0.5 : 1
+        t.$colorResult.style.opacity = alphaCube
     
         // prépare l'event
         let event = new CustomEvent('changeColor',
