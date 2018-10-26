@@ -195,7 +195,7 @@ html, body {
 }
 
 .content video {
-    width: 70%;
+    width: 30%;
 }
 
 .content .copyright {
@@ -221,8 +221,8 @@ html, body {
 }
 
 .right img {
-    margin-top: 3rem;
-    width: 10rem;
+    /* margin-top: 3rem; */
+    width: 20rem;
 }
 
 .right .bottom-copy {
