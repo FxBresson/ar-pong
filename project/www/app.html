@@ -130,11 +130,19 @@
         </svg>
     </div>
 
-    <!-- colorpicker -->
-    <div class="sandboxe-game__colors hidden">
-        <input class="sandboxe-game__slide-chroma" type="range" id="slideChroma" name="slideChroma" min="0" max="360" value="178">
+    <!-- color -->
+    <div class="sandboxe-game__slider-container hidden" id="colorPicker">
+        <input class="sandboxe-game__input" type="range" id="slideChroma" name="slideChroma" min="0" max="360" value="0">
         <div class="sandboxe-game__result-container">
             <div class="sandboxe-game__result"></div>
+        </div>
+    </div>
+
+    <!-- wireframe -->
+    <div class="sandboxe-game__slider-container hidden"  id="zPicker">
+        <input class="sandboxe-game__input" type="range" id="slideZValue" name="slideChroma" min="1" max="2" value="1">
+        <div class="sandboxe-game__result-container sandboxe-game__result-container--text">
+            <p class="sandboxe-game__result">1</p>
         </div>
     </div>
 

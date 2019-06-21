@@ -22,7 +22,7 @@ class Website {
             'patt.letterB',
         ]
 
-        new Sandboxe({pattern: 'patt.hiro', id: 'ar-sandbox'})
+        new Sandboxe({pattern: 'patt.letterA', id: 'ar-sandbox'})
         // for (let pattern of patterns)  new Sandboxe(pattern)
     }
 

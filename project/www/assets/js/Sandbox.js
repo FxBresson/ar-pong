@@ -14,11 +14,19 @@ class Sandbox {
         t.$buttonEdit = document.querySelector(".sandboxe-game__button--edit")
         t.$buttonDelete = document.querySelector(".sandboxe-game__button--delete")
         t.$buttonAdd = document.querySelector(".sandboxe-game__button--add")
-        t.$colors = document.querySelector(".sandboxe-game__colors")
-        t.$colorSlideChroma = document.querySelector(".sandboxe-game__slide-chroma")
-        t.$colorResultContainer = document.querySelector(".sandboxe-game__result-container")
-        t.$colorResult = document.querySelector(".sandboxe-game__result")
+
+        // color picker
+        t.$colors = document.querySelector("#colorPicker")
+        t.$colorSlideInput = t.$colors.querySelector('.sandboxe-game__input')
+        t.$colorResultContainer = t.$colors.querySelector(".sandboxe-game__result-container")
+        t.$colorResult = t.$colors.querySelector(".sandboxe-game__result")
         t.$colorResult.style.opacity = 1
+
+        // z picker
+        t.$z = document.querySelector("#zPicker")
+        t.$zInput = t.$z.querySelector('.sandboxe-game__input')
+        t.$zResultContainer = t.$z.querySelector(".sandboxe-game__result-container")
+        t.$zResult = t.$z.querySelector(".sandboxe-game__result")
 
         // variable urls
         THREEx.ArToolkitContext.baseURL = './assets/markers/'
@@ -60,6 +68,7 @@ class Sandbox {
 
         t.renderCubes()
         t.animationFrame()
+        t.updateMaxZ()
     }
 
     createRenderer() {
@@ -137,7 +146,7 @@ class Sandbox {
         }
 
         t.dom = {
-            $colorSlideChroma: t.$colorSlideChroma
+            $colorSlideInput: t.$colorSlideInput
         }
     }
 
@@ -148,17 +157,21 @@ class Sandbox {
         document.addEventListener("resize", t.resize.bind(t))
 
         // change color
-        t.$colorSlideChroma.addEventListener("change", t.updateCubeColor.bind(t))
+        t.$colorSlideInput.addEventListener("change", t.updateCubeColor.bind(t))
 
         // change l'alpha
         t.$colorResultContainer.addEventListener("click", t.updateAlphaCube.bind(t))
+
+        // change z index
+        t.$zInput.addEventListener("change", t.updateZ.bind(t))
 
         // edit button
         t.$buttonEdit.addEventListener("click", t.editMode.bind(t))
         t.$buttonAdd.addEventListener("click", t.addMode.bind(t))
         t.$buttonDelete.addEventListener("click", t.removeCube.bind(t))
 
-        // TODO: Reset alpha/color when CLicking on cube
+        // mettre à jour le z
+        window.addEventListener("updateMaxZ", t.updateMaxZ.bind(t))
     }
 
     resize() {
@@ -279,6 +292,14 @@ class Sandbox {
         t.directionalLight.target = grid
     }
 
+    updateMaxZ() {
+        const t = this
+
+        t.$zInput.setAttribute("max", maxZ)
+        t.$zInput.value = maxZ
+        t.updateZ()
+    }
+
     updateCubeColor() {
         const t = this
 
@@ -289,7 +310,7 @@ class Sandbox {
         let randomL = 65
 
         // change la couleur
-        let cubeColor = 'hsl(' + t.$colorSlideChroma.value + ', ' + randomS + '%, ' + randomL + '%)'
+        let cubeColor = 'hsl(' + t.$colorSlideInput.value + ', ' + randomS + '%, ' + randomL + '%)'
         t.$colorResult.style.backgroundColor = cubeColor
 
         // prépare l'event
@@ -323,6 +344,17 @@ class Sandbox {
         window.dispatchEvent(event)
     }
 
+    updateZ() {
+        const t = this
+
+        // change la valeur dans notre texte
+        t.$zResult.innerHTML = t.$zInput.value
+        maxZ = Number(t.$zInput.value)
+
+        // trigger changement visibilité des wireframes
+        window.dispatchEvent( new CustomEvent("showWireframe") )
+    }
+
     editMode() {
         const t = this
 
@@ -339,6 +371,9 @@ class Sandbox {
 
             // désélectionne tous les cubes
             window.dispatchEvent( new CustomEvent("cubeDeselected") )
+
+            // reset alpha
+            if (Number(t.$colorResult.style.opacity) === 0.5) t.$colorResult.style.opacity = 1
         } else {
 
             // changement des boutons
@@ -347,7 +382,7 @@ class Sandbox {
             t.$buttonAdd.classList.add('not-active')
 
             // trigger change pour setter la couleur dans le result petit timer pour l'alpha
-            t.$colorSlideChroma.dispatchEvent(new Event('change'))
+            t.$colorSlideInput.dispatchEvent(new Event('change'))
 
             // Mode edition à true -> autoriser le click sur la grille
             window.isEdition = true
@@ -364,7 +399,7 @@ class Sandbox {
         if (t.$buttonAdd.classList.contains('active')) {
 
             // changement des boutons
-            t.$colors.classList.add('hidden')
+            t.$z.classList.add('hidden')
             t.$buttonDelete.classList.add('hidden')
             t.$buttonEdit.classList.remove('not-active')
 
@@ -379,13 +414,15 @@ class Sandbox {
         } else {
 
             // trigger change pour setter la couleur dans le result
-            t.$colorSlideChroma.dispatchEvent( new Event('change') )
+            t.$zInput.dispatchEvent( new Event('change') )
 
             // trigger pour afficher les cubes en wireframe
-            window.dispatchEvent( new CustomEvent("showWireframe") )
+            let eventShowWireframe = new CustomEvent("showWireframe")
+            eventShowWireframe.zPosition = t.$zInput.value
+            window.dispatchEvent( eventShowWireframe )
 
             // changement des boutons
-            t.$colors.classList.remove('hidden')
+            t.$z.classList.remove('hidden')
             t.$buttonEdit.classList.add('not-active')
 
             // Mode adition à true -> autoriser le click sur la grille
@@ -397,8 +434,6 @@ class Sandbox {
     }
 
     removeCube() {
-        const t = this
-
         let event = new CustomEvent('removeCube')
 
         // trigger event de suppression du cube

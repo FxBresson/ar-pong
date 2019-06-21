@@ -8,18 +8,24 @@ class Website {
     init(){
         const t = this
 
-        
-
         t.getMarkers()
+        t.removeScroll()
+    }
+
+    removeScroll() {
+
+        window.ontouchmove = (e) => {
+            e = e || window.event
+            if (e.preventDefault) e.preventDefault()
+            e.returnValue = false
+        }
     }
 
     getMarkers() {
-        const t = this
 
         socket.emit('get_sandboxes');
         socket.on('return_sandboxes', (sandboxes) => {
-            for (let sandbox of Object.values(sandboxes))  new Sandbox(sandbox)
-
+            for (let sandbox of Object.values(sandboxes)) new Sandbox(sandbox)
         })
     }
 

@@ -16,6 +16,11 @@ var httpsServer = https.createServer(credentials, app);
 var path = require('path');
 var io = require('socket.io')(httpsServer, {secure: true});
 
+var colors = {
+    white: 'hsl(0, 0%, 100%)',
+    default: 'hsl(0, 75%, 65%)'
+}
+
 // Basic server config ====================
 app.use(express.static(path.join(__dirname, 'www')));
 app.get('/ar', function(req, res){
@@ -32,7 +37,7 @@ const gridSize = 5;
 let sandboxes = {
     hiro: {
         id: 'hiro',
-        pattern: 'patt.hiro', 
+        pattern: 'patt.letterA',
         cubes: []
     }
 }
@@ -62,7 +67,7 @@ for (var y = 0; y<=gridSize; y++) {
                     y: y,
                     z: z
                 },
-                color: 'hsl(0, 0%, 100%)',
+                color: status === "wireframe" || status === "hidding" ? colors.white : colors.default,
                 alpha: 1,
                 status: status,
                 _id: incrementalId++,
@@ -76,16 +81,16 @@ for (var y = 0; y<=gridSize; y++) {
 function updateCube(newProps, socket) {
     let updatedCube = Object.assign({}, sandboxes.hiro.cubes[newProps._id], newProps);
     sandboxes.hiro.cubes[newProps._id] = updatedCube;
+    if (updatedCube.status === "show" && updatedCube.color === colors.white) updatedCube.color = colors.default
     io.emit('cube_update', updatedCube, socket);
 }
 
 
 // Socket.io interactions ====================
 io.on('connection', function(socket){
-    // console.log('connected'+socket.id)
 
     socket.on('get_sandboxes', () => {
-       io.emit('return_sandboxes', sandboxes) 
+       io.emit('return_sandboxes', sandboxes)
     })
 
     socket.on('cube_color', (newProps) => updateCube(newProps))

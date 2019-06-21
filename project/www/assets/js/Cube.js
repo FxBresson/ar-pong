@@ -34,11 +34,19 @@ class Cube {
     init() {
         const t = this
 
+        t.maxZ()
         t.defineTextures()
         t.appendCube()
         t.bindEvents()
     }
 
+
+    maxZ() {
+        const t = this
+
+        // récupère le plus grand Zindex
+        if ( t.y > maxZ && t.status === "wireframe") maxZ = t.y + 1
+    }
     update(cube, socketId) {
         const t = this
 
@@ -60,6 +68,15 @@ class Cube {
 
                 t.mesh.material = material
 
+                // met à jour notre z picker
+                if (t.y + 1 === maxZ && t.status === "show") {
+                    maxZ++
+                    window.dispatchEvent( new CustomEvent("updateMaxZ") )
+                }
+
+                t.showWireframe()
+
+                t.cubeDeselected()
             }
         }
     }
@@ -68,13 +85,15 @@ class Cube {
         const t = this
 
         if (t.status === "hidding") {
+
             if(mustSelect) t.mesh.selected = false
             t.mesh.visible = false
         } else if (t.status === "show") {
+
             if(mustSelect) t.mesh.selected = true
             t.mesh.visible = true
-
         } else if (t.status === "wireframe") {
+
             if(mustSelect) t.mesh.selected = false
             t.mesh.visible = true
             t.mesh.material = t.texture.wireframe
@@ -172,6 +191,7 @@ class Cube {
         window.addEventListener("showWireframe", t.showWireframe.bind(t))
         window.addEventListener("hideWireframe", t.hideWireframe.bind(t))
         window.addEventListener("cubeDeselected", t.cubeDeselected.bind(t))
+
         socket.on('cube_update', (cubeInfos, socketId) => t.update(cubeInfos, socketId))
     }
 
@@ -210,10 +230,6 @@ class Cube {
                 color: e.detail.color ? e.detail.color : t.color,
                 alpha: e.detail.alpha ? e.detail.alpha : t.alpha
             })
-
-            
-
-            // TODO : envoyer au serveur la nouvelle couleur
         }
     }
 
@@ -223,11 +239,6 @@ class Cube {
         if (t.mesh.selected) {
 
             t.modificationPhase = true
-
-            // reset les variables
-            // t.mesh.selected = false
-            // t.mesh.visible = false
-            // t.status = "hidding"
 
             socket.emit('cube_remove', {
                 _id: t.id,
@@ -239,41 +250,33 @@ class Cube {
     addCube() {
         const t = this
 
-
         if (t.mesh.selected) {
             t.modificationPhase = true
-
-            // reset des variables
-            // t.mesh.selected = true
-            // t.mesh.visible = true
-            // t.status = "show"
 
             socket.emit('cube_add', {
                 _id: t.id,
                 status: "show"
             })
         }
-
-        // // trigger le changement de couleur
-        // t.$colorSlideChroma.dispatchEvent(new Event('change'))
     }
 
-    addWireframe() {
-        const t = this
-
-        // défini les variable
-        t.mesh.selected = false
-        // t.mesh.visible = true // visible ou pas visible dépend de où l'on appelera la fonction
-        t.status = "wireframe"
-
-        // applique la texture par défault
-        t.mesh.material = t.texture.wireframe
-    }
+    // addWireframe() {
+    //     const t = this
+    //
+    //     // défini les variable
+    //     t.mesh.selected = false
+    //     // t.mesh.visible = true // visible ou pas visible dépend de où l'on appelera la fonction
+    //     t.status = "wireframe"
+    //
+    //     // applique la texture par défault
+    //     t.mesh.material = t.texture.wireframe
+    // }
 
     showWireframe(){
         const t = this
 
-        if (t.status === "wireframe") t.mesh.visible = true
+        if (t.status === "wireframe" && t.y < maxZ) t.mesh.visible = true
+        else if (t.status === "wireframe" && t.y >= maxZ) t.mesh.visible = false
     }
 
     hideWireframe(){

@@ -1,2 +1,3 @@
-const socket = io();
-new Website();
+const socket = io()
+new Website()
+let maxZ = 0
